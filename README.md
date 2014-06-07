@@ -1,4 +1,0 @@
-SpeakApp
-========
-
-SpeakApp
