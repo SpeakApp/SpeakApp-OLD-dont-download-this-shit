@@ -14,12 +14,11 @@ import com.speakapp.app.R;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BoardAdapter extends ArrayAdapter<String> {
-
+public class BoardAdapter extends ArrayAdapter<String>
+{
     private Context m_context;
     private ArrayList<String> m_cards;
     private LayoutInflater m_layoutInflater;
-    private MediaPlayer m_MediaPlayer;
     public BoardAdapter(Context context, ArrayList<String> cards) {
         super(context, R.layout.activity_main);
         m_context = context;

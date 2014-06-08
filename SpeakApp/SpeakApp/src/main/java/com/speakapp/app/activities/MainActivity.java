@@ -11,8 +11,8 @@ import com.speakapp.app.R;
 import java.util.ArrayList;
 
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends Activity
+{
     private ArrayList<String> m_activeBoard;
     private BoardAdapter m_boardAdapter;
 
