@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="com.speakapp.app.Main">
+    tools:context="com.speakapp.app.activities.MainActivity">
 
     <RelativeLayout
         android:layout_width="fill_parent"

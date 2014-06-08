@@ -1,11 +1,15 @@
-package com.speakapp.app;
+package com.speakapp.app.adapters;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.speakapp.app.Managers.SoundManager;
+import com.speakapp.app.R;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,7 +19,7 @@ public class BoardAdapter extends ArrayAdapter<String> {
     private Context m_context;
     private ArrayList<String> m_cards;
     private LayoutInflater m_layoutInflater;
-
+    private MediaPlayer m_MediaPlayer;
     public BoardAdapter(Context context, ArrayList<String> cards) {
         super(context, R.layout.activity_main);
         m_context = context;
@@ -50,6 +54,7 @@ public class BoardAdapter extends ArrayAdapter<String> {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SoundManager.playFormResource(getContext(), R.raw.dog);
                 switchBoard(randomCards());
             }
         });
