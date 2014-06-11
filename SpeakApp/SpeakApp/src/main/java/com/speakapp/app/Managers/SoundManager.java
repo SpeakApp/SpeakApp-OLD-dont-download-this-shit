@@ -1,4 +1,4 @@
-package com.speakapp.app.Managers;
+package com.speakapp.app.managers;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -21,6 +21,7 @@ public class SoundManager
     private MediaRecorder mRecorder = null;
 
     private MediaPlayer mPlayer = null;
+    
 
     public static SoundManager initInstance(Context context)
     {
@@ -57,37 +58,56 @@ public class SoundManager
         mPlayer = new MediaPlayer();
         try
         {
+            //todo: File existens checking!!
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
             mPlayer.start();
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer)
+                {
+                    stopPlaying();
+                }
+            });
         }
         catch (IOException e)
         {
             Log.e(TAG, "prepare() failed");
+            stopPlaying();
         }
     }
 
     public void stopPlaying()
     {
-        mPlayer.release();
-        mPlayer = null;
+        if(mPlayer !=null)
+        {
+            try
+            {
+                mPlayer.release();
+            }
+            finally
+            {
+                mPlayer = null;
+            }
+        }
     }
 
     public void startRecording()
     {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
         try
         {
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setOutputFile(mFileName);//todo: File existens checking!!
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mRecorder.prepare();
         }
         catch (IOException e)
         {
             Log.e(TAG, "prepare() failed");
+            stopRecording();
+            return;
         }
 
         mRecorder.start();
@@ -95,9 +115,18 @@ public class SoundManager
 
     public void stopRecording()
     {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        if (mRecorder != null)
+        {
+            try
+            {
+                mRecorder.stop();
+                mRecorder.release();
+            }
+            finally
+            {
+                mRecorder = null;
+            }
+        }
     }
 
 
@@ -115,5 +144,15 @@ public class SoundManager
             mPlayer.release();
             mPlayer = null;
         }
+    }
+
+    public boolean isRecording()
+    {
+        return mRecorder != null;
+    }
+
+    public boolean isPlaying()
+    {
+        return mPlayer != null;
     }
 }
