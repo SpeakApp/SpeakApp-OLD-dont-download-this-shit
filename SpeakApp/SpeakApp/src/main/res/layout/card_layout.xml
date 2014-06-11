@@ -3,7 +3,8 @@
     android:layout_width="150dp"
     android:layout_height="150dp"
     android:layout_margin="0dp"
-    android:padding="0dp">
+    android:padding="0dp"
+    >
     <RelativeLayout
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -21,6 +22,7 @@
             android:src="@drawable/dog"
             android:layout_margin="0dp"
             android:padding="0dp"
+            android:scaleType="centerCrop"
             />
 
         <TextView
@@ -32,6 +34,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="0dp"
-            android:padding="0dp"/>
+            android:padding="0dp"
+            android:textColor="@android:color/black"/>
     </RelativeLayout>
 </LinearLayout>
