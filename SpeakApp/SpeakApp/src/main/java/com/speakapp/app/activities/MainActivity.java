@@ -79,7 +79,7 @@ public class MainActivity extends Activity
     }
 
     private void fillDemoValues() {
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 20; i++) {
             m_activeBoard.add("card " + i);
         }
     }

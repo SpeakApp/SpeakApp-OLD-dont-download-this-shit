@@ -67,7 +67,7 @@ public class BoardAdapter extends ArrayAdapter<String>
     private ArrayList<String> randomCards() {
         ArrayList<String> randomCards = new ArrayList<String>();
         Random a = new Random();
-        for(int i = 0; i < a.nextInt(30)+1; i++) {
+        for(int i = 0; i < a.nextInt(50)+1; i++) {
             randomCards.add("card " + i);
         }
         return randomCards;
