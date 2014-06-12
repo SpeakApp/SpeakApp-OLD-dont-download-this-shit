@@ -1,10 +1,13 @@
 package com.speakapp.app.activities;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.speakapp.app.R;
 import com.speakapp.app.adapters.BoardAdapter;
@@ -17,6 +20,8 @@ public class MainActivity extends Activity
 {
     private ArrayList<String> m_activeBoard;
     private BoardAdapter m_boardAdapter;
+    private SoundManager mSoundManager;
+    private TextView mRecordText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,25 +32,58 @@ public class MainActivity extends Activity
         GridView gridview = (GridView) findViewById(R.id.gridView);
         gridview.setAdapter(m_boardAdapter);
 
+        mRecordText = (TextView)findViewById(R.id.recording_text);
 
         final Button record = (Button)findViewById(R.id.record_btn);
-        record.setOnClickListener(new View.OnClickListener()
+        record.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
-            public void onClick(View view)
+            public boolean onTouch(View view, MotionEvent motionEvent)
             {
-                if (getSoundManager().isRecording())
+                int action = motionEvent.getAction();
+
+                switch (action)
                 {
-                    getSoundManager().stopRecording();
-                    record.setText("Record");
+                    case MotionEvent.ACTION_DOWN:
+                        if(!getSoundManager().isRecording())
+                        {
+                            getSoundManager().playFormResource(MainActivity.this, R.raw.dog, new MediaPlayer.OnCompletionListener() {
+                                @Override
+                                public void onCompletion(MediaPlayer mediaPlayer)
+                                {
+                                    getSoundManager().startRecording();
+                                }
+                            });
+                        }
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        if(getSoundManager().isRecording())
+                        {
+                            getSoundManager().stopRecording();
+                        }
+                        return true;
                 }
-                else
-                {
-                    getSoundManager().startRecording();
-                    record.setText("Stop");
-                }
+                return false;
             }
         });
+
+//        record.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                if (getSoundManager().isRecording())
+//                {
+//                    getSoundManager().stopRecording();
+//                    record.setText("Record");
+//                }
+//                else
+//                {
+//                    getSoundManager().startRecording();
+//                    record.setText("Stop");
+//                }
+//            }
+//        });
 
         final Button play = (Button)findViewById(R.id.play_btn);
         play.setOnClickListener(new View.OnClickListener()
@@ -56,12 +94,10 @@ public class MainActivity extends Activity
                 if (getSoundManager().isPlaying())
                 {
                     getSoundManager().stopPlaying();
-              //      play.setText("Play");
                 }
                 else
                 {
                     getSoundManager().startPlaying();
-                 //   play.setText("Stop");
                 }
             }
         });
@@ -69,7 +105,36 @@ public class MainActivity extends Activity
 
     private SoundManager getSoundManager()
     {
-        return  SoundManager.getInstance();
+        if(mSoundManager == null)
+        {
+            mSoundManager = new SoundManager(new SoundManager.SoundManagerEventsListener() {
+                @Override
+                public void onStartRecording()
+                {
+                    mRecordText.setText("Recording...");
+                }
+
+                @Override
+                public void onStopRecording()
+                {
+                    mRecordText.setText("Recording ended");
+                }
+
+                @Override
+                public void onStartPlaying()
+                {
+                    mRecordText.setText("Playing sound started");
+                }
+
+                @Override
+                public void onStopPlaying()
+                {
+                    mRecordText.setText("Playing sound ended");
+                }
+            });
+        }
+
+        return mSoundManager;
     }
 
     private void init() {

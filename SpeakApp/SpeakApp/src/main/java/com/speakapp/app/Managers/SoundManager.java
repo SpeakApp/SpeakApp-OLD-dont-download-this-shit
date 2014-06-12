@@ -17,39 +17,42 @@ public class SoundManager
 
     private String mFileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp";
     private static SoundManager msInstance = null;
-    private Context mContext = null;
+//    private Context mContext = null;
     private MediaRecorder mRecorder = null;
 
     private MediaPlayer mPlayer = null;
-    
+    private SoundManagerEventsListener mSoundManagerEventsListener;
 
-    public static SoundManager initInstance(Context context)
+
+    //    public static SoundManager initInstance(Context context)
+//    {
+//        if (msInstance == null)
+//        {
+//            msInstance = new SoundManager(context);
+//        }
+//        return msInstance;
+//    }
+//
+//
+//    public static SoundManager getInstance()
+//    {
+//        if (msInstance == null)
+//        {
+//            Log.e(TAG, "Must init SoundManager");
+//        }
+//        return msInstance;
+//    }
+
+    public SoundManager(SoundManagerEventsListener soundManagerEventsListener)
     {
-        if (msInstance == null)
-        {
-            msInstance = new SoundManager(context);
-        }
-        return msInstance;
+        mSoundManagerEventsListener = soundManagerEventsListener;
     }
 
-
-    public static SoundManager getInstance()
+    public void playFormResource(Context context, int resource, MediaPlayer.OnCompletionListener onPlayCompletedListener)
     {
-        if (msInstance == null)
-        {
-            Log.e(TAG, "Must init SoundManager");
-        }
-        return msInstance;
-    }
-
-    private SoundManager(Context context)
-    {
-        mContext = context;
-    }
-
-    public void playFormResource(Context context, int resource)
-    {
-        MediaPlayer.create(context, resource).start();
+        MediaPlayer mediaPlayer = MediaPlayer.create(context, resource);
+        mediaPlayer.setOnCompletionListener(onPlayCompletedListener);
+        mediaPlayer.start();
     }
 
 
@@ -62,6 +65,7 @@ public class SoundManager
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
             mPlayer.start();
+            mSoundManagerEventsListener.onStartPlaying();
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer)
@@ -88,6 +92,7 @@ public class SoundManager
             finally
             {
                 mPlayer = null;
+                mSoundManagerEventsListener.onStopPlaying();
             }
         }
     }
@@ -102,6 +107,8 @@ public class SoundManager
             mRecorder.setOutputFile(mFileName);//todo: File existens checking!!
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             mRecorder.prepare();
+            mRecorder.start();
+            mSoundManagerEventsListener.onStartRecording();
         }
         catch (IOException e)
         {
@@ -109,8 +116,6 @@ public class SoundManager
             stopRecording();
             return;
         }
-
-        mRecorder.start();
     }
 
     public void stopRecording()
@@ -125,6 +130,7 @@ public class SoundManager
             finally
             {
                 mRecorder = null;
+                mSoundManagerEventsListener.onStopRecording();
             }
         }
     }
@@ -154,5 +160,13 @@ public class SoundManager
     public boolean isPlaying()
     {
         return mPlayer != null;
+    }
+
+    public interface SoundManagerEventsListener
+    {
+        void onStartRecording();
+        void onStopRecording();
+        void onStartPlaying();
+        void onStopPlaying();
     }
 }

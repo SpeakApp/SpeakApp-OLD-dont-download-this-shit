@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.speakapp.app.managers.SoundManager;
 import com.speakapp.app.R;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class BoardAdapter extends ArrayAdapter<String>
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SoundManager.getInstance().playFormResource(getContext(), R.raw.dog);
+//                SoundManager.getInstance().playFormResource(getContext(), R.raw.dog);
                 switchBoard(randomCards());
             }
         });
