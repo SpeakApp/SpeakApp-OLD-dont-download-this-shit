@@ -8,5 +8,6 @@ public class SpeakAppApplication extends Application
     public void onCreate()
     {
        // SoundManager.initInstance(getApplicationContext());
+        // Itzik??????
     }
 }
